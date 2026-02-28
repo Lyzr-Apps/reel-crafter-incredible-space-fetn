@@ -291,7 +291,7 @@ export default function Page() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [activeCampaignId, setActiveCampaignId] = useState<string | null>(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [sampleMode, setSampleMode] = useState(false)
+  const [sampleMode, setSampleMode] = useState(true)
   const [contentLoading, setContentLoading] = useState(false)
   const [visualsLoading, setVisualsLoading] = useState(false)
   const [activeAgentId, setActiveAgentId] = useState<string | null>(null)
