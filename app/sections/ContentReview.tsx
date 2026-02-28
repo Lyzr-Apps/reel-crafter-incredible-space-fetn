@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Separator } from '@/components/ui/separator'
 import { copyToClipboard } from '@/lib/clipboard'
-import { MdContentCopy, MdCheck, MdArrowBack, MdAutoAwesome, MdMovie, MdAdsClick, MdWeb, MdMusicNote, MdTipsAndUpdates, MdPlayCircle } from 'react-icons/md'
+import { MdContentCopy, MdCheck, MdArrowBack, MdAutoAwesome, MdMovie, MdAdsClick, MdWeb, MdMusicNote, MdTipsAndUpdates, MdPlayCircle, MdDownload, MdSelectAll } from 'react-icons/md'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 interface Campaign {
@@ -58,6 +58,149 @@ function CopyButton({ text }: { text: string }) {
   )
 }
 
+function formatCampaignAsText(campaign: Campaign): string {
+  const lines: string[] = []
+  const content = campaign.content
+  const br = campaign.brief
+
+  lines.push('=' .repeat(60))
+  lines.push(`CAMPAIGN: ${campaign.name}`)
+  lines.push('=' .repeat(60))
+  lines.push(`Date: ${campaign.date}`)
+  lines.push(`Status: ${campaign.status}`)
+  lines.push(`Tone: ${campaign.tone}`)
+  lines.push(`Platforms: ${Array.isArray(campaign.platforms) ? campaign.platforms.join(', ') : ''}`)
+  lines.push('')
+
+  if (br) {
+    lines.push('-'.repeat(40))
+    lines.push('CAMPAIGN BRIEF')
+    lines.push('-'.repeat(40))
+    if (br.goal) lines.push(`Goal: ${br.goal}`)
+    if (br.audience) lines.push(`Audience: ${br.audience}`)
+    if (br.voice) lines.push(`Brand Voice: ${br.voice}`)
+    if (br.messages) lines.push(`Key Messages:\n${br.messages}`)
+    lines.push('')
+  }
+
+  if (content?.campaign_summary) {
+    lines.push('-'.repeat(40))
+    lines.push('CAMPAIGN SUMMARY')
+    lines.push('-'.repeat(40))
+    lines.push(content.campaign_summary)
+    lines.push('')
+  }
+
+  const reels = content?.reels_script
+  if (reels) {
+    lines.push('-'.repeat(40))
+    lines.push('INSTAGRAM REELS SCRIPT')
+    lines.push('-'.repeat(40))
+    if (reels.hook) lines.push(`HOOK: ${reels.hook}`)
+    lines.push('')
+    const scenes = Array.isArray(reels.scenes) ? reels.scenes : []
+    scenes.forEach((s: any) => {
+      lines.push(`--- Scene ${s?.scene_number ?? ''} (${s?.duration_seconds ?? ''}s) ---`)
+      if (s?.visual_direction) lines.push(`Visual: ${s.visual_direction}`)
+      if (s?.on_screen_text) lines.push(`On-Screen Text: ${s.on_screen_text}`)
+      if (s?.voiceover) lines.push(`Voiceover: ${s.voiceover}`)
+      lines.push('')
+    })
+    if (reels.cta) lines.push(`CTA: ${reels.cta}`)
+    if (reels.total_duration) lines.push(`Duration: ${reels.total_duration}`)
+    if (reels.music_suggestion) lines.push(`Music: ${reels.music_suggestion}`)
+    const tips = Array.isArray(reels.platform_tips) ? reels.platform_tips : []
+    if (tips.length > 0) {
+      lines.push('\nPlatform Tips:')
+      tips.forEach((t: string) => lines.push(`  - ${t}`))
+    }
+    lines.push('')
+  }
+
+  const meta = content?.meta_ads
+  if (meta) {
+    lines.push('-'.repeat(40))
+    lines.push('META ADS COPY')
+    lines.push('-'.repeat(40))
+    const placements = Array.isArray(meta.placements) ? meta.placements : []
+    placements.forEach((p: any) => {
+      lines.push(`\n--- ${p?.placement_type ?? 'Placement'} ---`)
+      const primaryTexts = Array.isArray(p?.primary_text_variants) ? p.primary_text_variants : []
+      if (primaryTexts.length > 0) {
+        lines.push('Primary Text Variants:')
+        primaryTexts.forEach((t: string, i: number) => lines.push(`  ${i + 1}. ${t}`))
+      }
+      const headlines = Array.isArray(p?.headline_variants) ? p.headline_variants : []
+      if (headlines.length > 0) {
+        lines.push('Headlines:')
+        headlines.forEach((h: string, i: number) => lines.push(`  ${i + 1}. ${h}`))
+      }
+      if (p?.description) lines.push(`Description: ${p.description}`)
+      if (p?.cta_button) lines.push(`CTA Button: ${p.cta_button}`)
+      if (p?.optimization_notes) lines.push(`Notes: ${p.optimization_notes}`)
+    })
+    lines.push('')
+  }
+
+  const lp = content?.landing_page
+  if (lp) {
+    lines.push('-'.repeat(40))
+    lines.push('LANDING PAGE DRAFT')
+    lines.push('-'.repeat(40))
+    if (lp.headline) lines.push(`Headline: ${lp.headline}`)
+    if (lp.subheadline) lines.push(`Subheadline: ${lp.subheadline}`)
+    if (lp.hero_description) lines.push(`Hero Description: ${lp.hero_description}`)
+    if (lp.hero_cta) lines.push(`Hero CTA: ${lp.hero_cta}`)
+    const vps = Array.isArray(lp.value_propositions) ? lp.value_propositions : []
+    if (vps.length > 0) {
+      lines.push('\nValue Propositions:')
+      vps.forEach((v: any) => lines.push(`  - ${v?.title ?? ''}: ${v?.description ?? ''}`))
+    }
+    const feats = Array.isArray(lp.feature_highlights) ? lp.feature_highlights : []
+    if (feats.length > 0) {
+      lines.push('\nFeature Highlights:')
+      feats.forEach((f: any) => lines.push(`  - ${f?.title ?? ''}: ${f?.description ?? ''}`))
+    }
+    const sps = Array.isArray(lp.social_proof_suggestions) ? lp.social_proof_suggestions : []
+    if (sps.length > 0) {
+      lines.push('\nSocial Proof:')
+      sps.forEach((s: string) => lines.push(`  - ${s}`))
+    }
+    const fqs = Array.isArray(lp.faqs) ? lp.faqs : []
+    if (fqs.length > 0) {
+      lines.push('\nFAQs:')
+      fqs.forEach((f: any) => {
+        lines.push(`  Q: ${f?.question ?? ''}`)
+        lines.push(`  A: ${f?.answer ?? ''}`)
+        lines.push('')
+      })
+    }
+    if (lp.secondary_cta) lines.push(`Secondary CTA: ${lp.secondary_cta}`)
+    if (lp.footer_cta) lines.push(`Footer CTA: ${lp.footer_cta}`)
+    if (lp.footer_copy) lines.push(`Footer Copy: ${lp.footer_copy}`)
+    lines.push('')
+  }
+
+  lines.push('=' .repeat(60))
+  lines.push('Generated by MarketFlow AI Content Studio')
+  lines.push('=' .repeat(60))
+
+  return lines.join('\n')
+}
+
+function downloadAsText(campaign: Campaign) {
+  const text = formatCampaignAsText(campaign)
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${campaign.name.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '-').toLowerCase()}-campaign.txt`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+
 function renderMarkdown(text: string) {
   if (!text) return null
   return (
@@ -84,6 +227,9 @@ function formatInline(text: string) {
 }
 
 export default function ContentReview({ campaign, onBack, onGenerateVisuals, visualsLoading, visualsData, visualImages }: ContentReviewProps) {
+  const [copyAllDone, setCopyAllDone] = useState(false)
+  const [downloadDone, setDownloadDone] = useState(false)
+
   if (!campaign) return null
 
   const content = campaign.content
@@ -103,19 +249,56 @@ export default function ContentReview({ campaign, onBack, onGenerateVisuals, vis
   return (
     <div className="flex-1 overflow-y-auto">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-8 py-6 border-b border-border">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={onBack} className="rounded-xl">
-            <MdArrowBack className="w-5 h-5" />
-          </Button>
-          <div>
-            <h2 className="text-2xl font-semibold tracking-[-0.01em] font-sans text-foreground">{campaign.name}</h2>
-            <p className="text-sm text-muted-foreground mt-1 font-sans leading-[1.55]">{content?.campaign_summary ?? 'Campaign content review'}</p>
+      <div className="px-8 py-6 border-b border-border space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={onBack} className="rounded-xl">
+              <MdArrowBack className="w-5 h-5" />
+            </Button>
+            <div>
+              <h2 className="text-2xl font-semibold tracking-[-0.01em] font-sans text-foreground">{campaign.name}</h2>
+              <p className="text-sm text-muted-foreground mt-1 font-sans leading-[1.55] max-w-2xl line-clamp-2">{content?.campaign_summary ?? 'Campaign content review'}</p>
+            </div>
           </div>
+          <Badge variant={campaign.status === 'complete' ? 'default' : 'secondary'} className="rounded-lg font-sans shrink-0">
+            {campaign.status === 'complete' ? 'Complete' : 'Draft'}
+          </Badge>
         </div>
-        <Badge variant={campaign.status === 'complete' ? 'default' : 'secondary'} className="rounded-lg font-sans">
-          {campaign.status === 'complete' ? 'Complete' : 'Draft'}
-        </Badge>
+
+        {/* Export Toolbar */}
+        {campaign.status === 'complete' && content && (
+          <div className="flex items-center gap-3 ml-14">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 rounded-xl font-sans text-xs font-medium"
+              onClick={async () => {
+                const text = formatCampaignAsText(campaign)
+                const success = await copyToClipboard(text)
+                if (success) {
+                  setCopyAllDone(true)
+                  setTimeout(() => setCopyAllDone(false), 2500)
+                }
+              }}
+            >
+              {copyAllDone ? <MdCheck className="w-4 h-4 text-green-600" /> : <MdSelectAll className="w-4 h-4" />}
+              {copyAllDone ? 'Copied All' : 'Copy All Content'}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 rounded-xl font-sans text-xs font-medium"
+              onClick={() => {
+                downloadAsText(campaign)
+                setDownloadDone(true)
+                setTimeout(() => setDownloadDone(false), 2500)
+              }}
+            >
+              {downloadDone ? <MdCheck className="w-4 h-4 text-green-600" /> : <MdDownload className="w-4 h-4" />}
+              {downloadDone ? 'Downloaded' : 'Download as TXT'}
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="p-8 space-y-8">
