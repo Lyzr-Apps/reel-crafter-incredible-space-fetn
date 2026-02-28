@@ -319,9 +319,9 @@ export default function Page() {
     }
   }, [campaigns])
 
-  // Display campaigns based on sample mode
+  // Display campaigns based on sample mode — user campaigns first
   const displayCampaigns = sampleMode
-    ? [...getSampleCampaigns(), ...campaigns]
+    ? [...campaigns, ...getSampleCampaigns()]
     : campaigns
 
   const activeCampaign = displayCampaigns.find(c => c.id === activeCampaignId) ?? null
