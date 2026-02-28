@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { MdAddCircle, MdCampaign, MdAutoAwesome, MdTrendingUp } from 'react-icons/md'
+import { MdAddCircle, MdCampaign, MdAutoAwesome, MdTrendingUp, MdOpenInNew, MdMovie, MdAdsClick, MdWeb } from 'react-icons/md'
 
 interface Campaign {
   id: string
@@ -124,35 +124,89 @@ export default function Dashboard({ campaigns, onNewCampaign, onViewCampaign, sa
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {campaigns.map((campaign) => (
-                <Card
-                  key={campaign.id}
-                  className="backdrop-blur-[16px] bg-white/75 border border-white/[0.18] shadow-md rounded-[0.875rem] cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
-                  onClick={() => onViewCampaign(campaign.id)}
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <CardTitle className="text-base font-semibold font-sans text-foreground">{campaign.name}</CardTitle>
-                      <Badge variant={campaign.status === 'complete' ? 'default' : 'secondary'} className="rounded-lg text-xs font-sans">
-                        {campaign.status === 'complete' ? 'Complete' : 'Draft'}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0 space-y-3">
-                    <p className="text-xs text-muted-foreground font-sans">{campaign.date}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {Array.isArray(campaign.platforms) && campaign.platforms.map((p) => (
-                        <Badge key={p} variant="outline" className="text-[11px] rounded-lg font-sans">
-                          {p}
+              {campaigns.map((campaign) => {
+                const summary = campaign.content?.campaign_summary ?? ''
+                const hasReels = !!campaign.content?.reels_script
+                const hasMeta = !!campaign.content?.meta_ads
+                const hasLanding = !!campaign.content?.landing_page
+                const hasVisuals = !!campaign.visuals
+                const goalSnippet = campaign.brief?.goal
+                  ? campaign.brief.goal.length > 100
+                    ? campaign.brief.goal.slice(0, 100) + '...'
+                    : campaign.brief.goal
+                  : ''
+
+                return (
+                  <Card
+                    key={campaign.id}
+                    className="backdrop-blur-[16px] bg-white/75 border border-white/[0.18] shadow-md rounded-[0.875rem] cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col"
+                    onClick={() => onViewCampaign(campaign.id)}
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-base font-semibold font-sans text-foreground leading-tight">{campaign.name}</CardTitle>
+                        <Badge variant={campaign.status === 'complete' ? 'default' : 'secondary'} className="rounded-lg text-xs font-sans shrink-0">
+                          {campaign.status === 'complete' ? 'Complete' : 'Draft'}
                         </Badge>
-                      ))}
-                    </div>
-                    {campaign.tone && (
-                      <p className="text-xs text-muted-foreground font-sans">Tone: {campaign.tone}</p>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground font-sans mt-1">{campaign.date}</p>
+                    </CardHeader>
+                    <CardContent className="pt-0 space-y-3 flex-1 flex flex-col">
+                      {/* Campaign description / goal */}
+                      {(summary || goalSnippet) && (
+                        <p className="text-sm text-muted-foreground font-sans leading-[1.55] line-clamp-3">
+                          {summary || goalSnippet}
+                        </p>
+                      )}
+
+                      {/* Content availability indicators */}
+                      {campaign.status === 'complete' && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {hasReels && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[11px] font-medium font-sans">
+                              <MdMovie className="w-3 h-3" /> Reels
+                            </span>
+                          )}
+                          {hasMeta && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent/10 text-accent text-[11px] font-medium font-sans">
+                              <MdAdsClick className="w-3 h-3" /> Ads
+                            </span>
+                          )}
+                          {hasLanding && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-green-500/10 text-green-700 text-[11px] font-medium font-sans">
+                              <MdWeb className="w-3 h-3" /> Page
+                            </span>
+                          )}
+                          {hasVisuals && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-700 text-[11px] font-medium font-sans">
+                              <MdAutoAwesome className="w-3 h-3" /> Visuals
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Platform badges and tone */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {Array.isArray(campaign.platforms) && campaign.platforms.map((p) => (
+                          <Badge key={p} variant="outline" className="text-[11px] rounded-lg font-sans">
+                            {p}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      {/* Footer with tone + action */}
+                      <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
+                        {campaign.tone && (
+                          <p className="text-xs text-muted-foreground font-sans">Tone: {campaign.tone}</p>
+                        )}
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-primary font-sans">
+                          View Results <MdOpenInNew className="w-3 h-3" />
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
           )}
         </div>
