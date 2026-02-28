@@ -345,7 +345,11 @@ export default function Page() {
 
   // Delete a campaign
   const handleDeleteCampaign = useCallback((id: string) => {
-    setCampaigns(prev => prev.filter(c => c.id !== id))
+    setCampaigns(prev => {
+      const updated = prev.filter(c => c.id !== id)
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)) } catch {}
+      return updated
+    })
     if (activeCampaignId === id) {
       setActiveCampaignId(null)
       setScreen('dashboard')
@@ -359,6 +363,26 @@ export default function Page() {
     setContentLoading(true)
     setActiveAgentId(MANAGER_AGENT_ID)
     setError('')
+
+    // Create the campaign immediately as a draft so it is never lost
+    const campaignId = generateUUID()
+    const newCampaign: Campaign = {
+      id: campaignId,
+      name: brief.name,
+      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+      platforms: brief.platforms,
+      status: 'draft',
+      tone: brief.tone,
+      brief: { goal: brief.goal, audience: brief.audience, voice: brief.voice, messages: brief.messages },
+    }
+
+    setCampaigns(prev => {
+      const updated = [newCampaign, ...prev]
+      // Persist immediately so it survives any reload
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)) } catch {}
+      return updated
+    })
+    setActiveCampaignId(campaignId)
 
     const message = `Campaign Brief:
 Campaign Name: ${brief.name}
@@ -375,31 +399,33 @@ Generate comprehensive marketing content for all selected platforms including re
       const result = await callAIAgent(message, MANAGER_AGENT_ID)
       const data = parseAgentResult(result)
 
-      const newCampaign: Campaign = {
-        id: generateUUID(),
-        name: brief.name,
-        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-        platforms: brief.platforms,
-        status: data ? 'complete' : 'draft',
-        tone: brief.tone,
-        brief: { goal: brief.goal, audience: brief.audience, voice: brief.voice, messages: brief.messages },
-        content: data ? {
-          campaign_summary: data?.campaign_summary ?? '',
-          reels_script: data?.reels_script ?? null,
-          meta_ads: data?.meta_ads ?? null,
-          landing_page: data?.landing_page ?? null,
-        } : undefined,
-      }
-
-      setCampaigns(prev => [newCampaign, ...prev])
-      setActiveCampaignId(newCampaign.id)
+      // Update the draft campaign with generated content
+      setCampaigns(prev => {
+        const updated = prev.map(c => {
+          if (c.id === campaignId) {
+            return {
+              ...c,
+              status: (data ? 'complete' : 'draft') as 'complete' | 'draft',
+              content: data ? {
+                campaign_summary: data?.campaign_summary ?? '',
+                reels_script: data?.reels_script ?? null,
+                meta_ads: data?.meta_ads ?? null,
+                landing_page: data?.landing_page ?? null,
+              } : undefined,
+            }
+          }
+          return c
+        })
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)) } catch {}
+        return updated
+      })
       setScreen('content-review')
 
       if (!data) {
         setError('Content was generated but could not be parsed. The campaign has been saved as a draft.')
       }
     } catch (err) {
-      setError('Failed to generate content. Please try again.')
+      setError('Failed to generate content. Your campaign has been saved as a draft — you can retry from the Dashboard.')
     } finally {
       setContentLoading(false)
       setActiveAgentId(null)
@@ -434,13 +460,17 @@ Create mood board concepts, thumbnail ideas, and scene-by-scene visual direction
           }))
         : []
 
-      // Update the campaign with visual data
-      setCampaigns(prev => prev.map(c => {
-        if (c.id === activeCampaign.id) {
-          return { ...c, visuals: { data, images } }
-        }
-        return c
-      }))
+      // Update the campaign with visual data and persist immediately
+      setCampaigns(prev => {
+        const updated = prev.map(c => {
+          if (c.id === activeCampaign.id) {
+            return { ...c, visuals: { data, images } }
+          }
+          return c
+        })
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)) } catch {}
+        return updated
+      })
     } catch (err) {
       setError('Failed to generate visual concepts. Please try again.')
     } finally {
