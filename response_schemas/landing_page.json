@@ -1,0 +1,58 @@
+{
+  "agent_name": "Landing Page Draft Agent",
+  "agent_id": "69a2372f5774a33f3b46b644",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_schema": {
+    "type": "object",
+    "properties": {
+      "headline": { "type": "string" },
+      "subheadline": { "type": "string" },
+      "hero_cta": { "type": "string" },
+      "hero_description": { "type": "string" },
+      "value_propositions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        }
+      },
+      "social_proof_suggestions": { "type": "array", "items": { "type": "string" } },
+      "feature_highlights": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        }
+      },
+      "secondary_cta": { "type": "string" },
+      "faqs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "question": { "type": "string" },
+            "answer": { "type": "string" }
+          },
+          "required": ["question", "answer"],
+          "additionalProperties": false
+        }
+      },
+      "footer_cta": { "type": "string" },
+      "footer_copy": { "type": "string" }
+    },
+    "required": ["headline", "subheadline", "hero_cta", "hero_description", "value_propositions", "social_proof_suggestions", "feature_highlights", "secondary_cta", "faqs", "footer_cta", "footer_copy"],
+    "additionalProperties": false
+  }
+}

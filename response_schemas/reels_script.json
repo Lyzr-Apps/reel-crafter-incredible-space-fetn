@@ -1,0 +1,34 @@
+{
+  "agent_name": "Reels Script Agent",
+  "agent_id": "69a2372f7e35e3f1981aa5fd",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_schema": {
+    "type": "object",
+    "properties": {
+      "hook": { "type": "string" },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "scene_number": { "type": "number" },
+            "visual_direction": { "type": "string" },
+            "on_screen_text": { "type": "string" },
+            "voiceover": { "type": "string" },
+            "duration_seconds": { "type": "string" }
+          },
+          "required": ["scene_number", "visual_direction", "on_screen_text", "voiceover", "duration_seconds"],
+          "additionalProperties": false
+        }
+      },
+      "cta": { "type": "string" },
+      "total_duration": { "type": "string" },
+      "music_suggestion": { "type": "string" },
+      "platform_tips": { "type": "array", "items": { "type": "string" } }
+    },
+    "required": ["hook", "scenes", "cta", "total_duration", "music_suggestion", "platform_tips"],
+    "additionalProperties": false
+  }
+}

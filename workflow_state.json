@@ -1,0 +1,11 @@
+{
+  "manager_agent_id": "69a23753f89af5d059caa28b",
+  "sub_agent_ids": {
+    "reels_script": "69a2372f7e35e3f1981aa5fd",
+    "meta_ads": "69a2372f63e82115005805c0",
+    "landing_page": "69a2372f5774a33f3b46b644"
+  },
+  "independent_agent_ids": {
+    "visual_concept": "69a237532d763c5cd41488c1"
+  }
+}

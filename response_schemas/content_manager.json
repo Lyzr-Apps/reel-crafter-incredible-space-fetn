@@ -1,0 +1,116 @@
+{
+  "agent_name": "Content Creation Manager",
+  "agent_id": "69a23753f89af5d059caa28b",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_schema": {
+    "type": "object",
+    "properties": {
+      "campaign_summary": { "type": "string" },
+      "reels_script": {
+        "type": "object",
+        "properties": {
+          "hook": { "type": "string" },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "scene_number": { "type": "number" },
+                "visual_direction": { "type": "string" },
+                "on_screen_text": { "type": "string" },
+                "voiceover": { "type": "string" },
+                "duration_seconds": { "type": "string" }
+              },
+              "required": ["scene_number", "visual_direction", "on_screen_text", "voiceover", "duration_seconds"],
+              "additionalProperties": false
+            }
+          },
+          "cta": { "type": "string" },
+          "total_duration": { "type": "string" },
+          "music_suggestion": { "type": "string" },
+          "platform_tips": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["hook", "scenes", "cta", "total_duration", "music_suggestion", "platform_tips"],
+        "additionalProperties": false
+      },
+      "meta_ads": {
+        "type": "object",
+        "properties": {
+          "placements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "placement_type": { "type": "string" },
+                "primary_text_variants": { "type": "array", "items": { "type": "string" } },
+                "headline_variants": { "type": "array", "items": { "type": "string" } },
+                "description": { "type": "string" },
+                "cta_button": { "type": "string" },
+                "optimization_notes": { "type": "string" }
+              },
+              "required": ["placement_type", "primary_text_variants", "headline_variants", "description", "cta_button", "optimization_notes"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["placements"],
+        "additionalProperties": false
+      },
+      "landing_page": {
+        "type": "object",
+        "properties": {
+          "headline": { "type": "string" },
+          "subheadline": { "type": "string" },
+          "hero_cta": { "type": "string" },
+          "hero_description": { "type": "string" },
+          "value_propositions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "description": { "type": "string" }
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            }
+          },
+          "social_proof_suggestions": { "type": "array", "items": { "type": "string" } },
+          "feature_highlights": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "description": { "type": "string" }
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            }
+          },
+          "secondary_cta": { "type": "string" },
+          "faqs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "question": { "type": "string" },
+                "answer": { "type": "string" }
+              },
+              "required": ["question", "answer"],
+              "additionalProperties": false
+            }
+          },
+          "footer_cta": { "type": "string" },
+          "footer_copy": { "type": "string" }
+        },
+        "required": ["headline", "subheadline", "hero_cta", "hero_description", "value_propositions", "social_proof_suggestions", "feature_highlights", "secondary_cta", "faqs", "footer_cta", "footer_copy"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["campaign_summary", "reels_script", "meta_ads", "landing_page"],
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "agent_name": "Reel Visual Concept Agent",
+  "agent_id": "69a237532d763c5cd41488c1",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": true,
+  "response_schema": {
+    "type": "object",
+    "properties": {
+      "mood_board_description": { "type": "string" },
+      "thumbnail_concept": { "type": "string" },
+      "color_palette": { "type": "array", "items": { "type": "string" } },
+      "visual_style": { "type": "string" },
+      "scene_visuals": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "scene_number": { "type": "number" },
+            "visual_description": { "type": "string" },
+            "composition_notes": { "type": "string" }
+          },
+          "required": ["scene_number", "visual_description", "composition_notes"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": ["mood_board_description", "thumbnail_concept", "color_palette", "visual_style", "scene_visuals"],
+    "additionalProperties": false
+  }
+}

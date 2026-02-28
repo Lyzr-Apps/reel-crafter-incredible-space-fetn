@@ -1,0 +1,30 @@
+{
+  "agent_name": "Meta Ads Copy Agent",
+  "agent_id": "69a2372f63e82115005805c0",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_schema": {
+    "type": "object",
+    "properties": {
+      "placements": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "placement_type": { "type": "string" },
+            "primary_text_variants": { "type": "array", "items": { "type": "string" } },
+            "headline_variants": { "type": "array", "items": { "type": "string" } },
+            "description": { "type": "string" },
+            "cta_button": { "type": "string" },
+            "optimization_notes": { "type": "string" }
+          },
+          "required": ["placement_type", "primary_text_variants", "headline_variants", "description", "cta_button", "optimization_notes"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": ["placements"],
+    "additionalProperties": false
+  }
+}

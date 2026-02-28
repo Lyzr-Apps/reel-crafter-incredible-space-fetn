@@ -1,0 +1,46 @@
+{
+  "agent_name": "Reel Visual Concept Agent",
+  "agent_id": "69a237532d763c5cd41488c1",
+  "description": "Generates AI visual concepts including mood board images, thumbnail ideas, and scene-by-scene visual direction for Instagram Reels based on the campaign brief and generated scripts",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "mood_board_description": "string",
+    "thumbnail_concept": "string",
+    "color_palette": [
+      "string"
+    ],
+    "visual_style": "string",
+    "scene_visuals": [
+      {
+        "scene_number": "number",
+        "visual_description": "string",
+        "composition_notes": "string"
+      }
+    ]
+  },
+  "example_response": {
+    "mood_board_description": "sample string",
+    "thumbnail_concept": "sample string",
+    "color_palette": [
+      "sample string"
+    ],
+    "visual_style": "sample string",
+    "scene_visuals": [
+      {
+        "scene_number": 0,
+        "visual_description": "sample string",
+        "composition_notes": "sample string"
+      }
+    ]
+  },
+  "has_module_outputs": true,
+  "module_outputs_example": {
+    "artifact_files": [
+      {
+        "file_url": "https://example.com/image.png"
+      }
+    ]
+  }
+}

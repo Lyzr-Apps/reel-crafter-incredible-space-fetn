@@ -1,0 +1,142 @@
+{
+  "agent_name": "Content Creation Manager",
+  "agent_id": "69a23753f89af5d059caa28b",
+  "description": "Coordinates sub-agents to generate all text-based marketing materials from a campaign brief; routes brief details, aggregates final outputs into a unified content package",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "campaign_summary": "string",
+    "reels_script": {
+      "hook": "string",
+      "scenes": [
+        {
+          "scene_number": "number",
+          "visual_direction": "string",
+          "on_screen_text": "string",
+          "voiceover": "string",
+          "duration_seconds": "string"
+        }
+      ],
+      "cta": "string",
+      "total_duration": "string",
+      "music_suggestion": "string",
+      "platform_tips": [
+        "string"
+      ]
+    },
+    "meta_ads": {
+      "placements": [
+        {
+          "placement_type": "string",
+          "primary_text_variants": [
+            "string"
+          ],
+          "headline_variants": [
+            "string"
+          ],
+          "description": "string",
+          "cta_button": "string",
+          "optimization_notes": "string"
+        }
+      ]
+    },
+    "landing_page": {
+      "headline": "string",
+      "subheadline": "string",
+      "hero_cta": "string",
+      "hero_description": "string",
+      "value_propositions": [
+        {
+          "title": "string",
+          "description": "string"
+        }
+      ],
+      "social_proof_suggestions": [
+        "string"
+      ],
+      "feature_highlights": [
+        {
+          "title": "string",
+          "description": "string"
+        }
+      ],
+      "secondary_cta": "string",
+      "faqs": [
+        {
+          "question": "string",
+          "answer": "string"
+        }
+      ],
+      "footer_cta": "string",
+      "footer_copy": "string"
+    }
+  },
+  "example_response": {
+    "campaign_summary": "sample string",
+    "reels_script": {
+      "hook": "sample string",
+      "scenes": [
+        {
+          "scene_number": 0,
+          "visual_direction": "sample string",
+          "on_screen_text": "sample string",
+          "voiceover": "sample string",
+          "duration_seconds": "sample string"
+        }
+      ],
+      "cta": "sample string",
+      "total_duration": "sample string",
+      "music_suggestion": "sample string",
+      "platform_tips": [
+        "sample string"
+      ]
+    },
+    "meta_ads": {
+      "placements": [
+        {
+          "placement_type": "sample string",
+          "primary_text_variants": [
+            "sample string"
+          ],
+          "headline_variants": [
+            "sample string"
+          ],
+          "description": "sample string",
+          "cta_button": "sample string",
+          "optimization_notes": "sample string"
+        }
+      ]
+    },
+    "landing_page": {
+      "headline": "sample string",
+      "subheadline": "sample string",
+      "hero_cta": "sample string",
+      "hero_description": "sample string",
+      "value_propositions": [
+        {
+          "title": "sample string",
+          "description": "sample string"
+        }
+      ],
+      "social_proof_suggestions": [
+        "sample string"
+      ],
+      "feature_highlights": [
+        {
+          "title": "sample string",
+          "description": "sample string"
+        }
+      ],
+      "secondary_cta": "sample string",
+      "faqs": [
+        {
+          "question": "sample string",
+          "answer": "sample string"
+        }
+      ],
+      "footer_cta": "sample string",
+      "footer_copy": "sample string"
+    }
+  }
+}
