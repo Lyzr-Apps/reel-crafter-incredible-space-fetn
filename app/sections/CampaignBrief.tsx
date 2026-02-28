@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-import { MdAutoAwesome, MdArrowBack } from 'react-icons/md'
+import { MdAutoAwesome, MdArrowBack, MdEdit, MdCheckCircle } from 'react-icons/md'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 interface CampaignBriefProps {
@@ -36,17 +36,22 @@ export default function CampaignBrief({ onSubmit, loading, onBack }: CampaignBri
   const [platforms, setPlatforms] = useState<string[]>([])
   const [tone, setTone] = useState('')
   const [error, setError] = useState('')
+  const [showConfirm, setShowConfirm] = useState(false)
 
   const togglePlatform = (p: string) => {
     setPlatforms(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p])
   }
 
-  const handleSubmit = () => {
+  const handleValidate = () => {
     if (!name.trim() || !goal.trim() || !audience.trim() || platforms.length === 0 || !tone) {
       setError('Please fill in campaign name, goal, audience, select at least one platform, and a tone.')
       return
     }
     setError('')
+    setShowConfirm(true)
+  }
+
+  const handleConfirm = () => {
     onSubmit({ goal, audience, voice, messages, platforms, tone, name })
   }
 
@@ -181,24 +186,85 @@ export default function CampaignBrief({ onSubmit, loading, onBack }: CampaignBri
               </div>
             )}
 
-            {/* Submit */}
-            <Button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="w-full gap-2 rounded-xl font-sans font-medium h-12 text-base"
-            >
-              {loading ? (
-                <>
-                  <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" />
-                  Creating your marketing materials...
-                </>
-              ) : (
-                <>
-                  <MdAutoAwesome className="w-5 h-5" />
-                  Generate Content
-                </>
-              )}
-            </Button>
+            {/* Confirmation Preview */}
+            {showConfirm && !loading && (
+              <div className="p-4 rounded-xl bg-primary/5 border-2 border-primary/20 space-y-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <MdCheckCircle className="w-5 h-5 text-primary" />
+                  <h4 className="text-sm font-semibold font-sans text-foreground">Review before generating</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm font-sans">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase font-medium">Campaign</p>
+                    <p className="text-foreground font-medium">{name}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase font-medium">Tone</p>
+                    <p className="text-foreground font-medium">{tone}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-xs text-muted-foreground uppercase font-medium">Goal</p>
+                    <p className="text-foreground">{goal}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-xs text-muted-foreground uppercase font-medium">Audience</p>
+                    <p className="text-foreground">{audience}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-xs text-muted-foreground uppercase font-medium">Platforms</p>
+                    <p className="text-foreground">{platforms.join(', ')}</p>
+                  </div>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowConfirm(false)}
+                    className="flex-1 gap-2 rounded-xl font-sans font-medium"
+                  >
+                    <MdEdit className="w-4 h-4" />
+                    Edit Brief
+                  </Button>
+                  <Button
+                    onClick={handleConfirm}
+                    className="flex-1 gap-2 rounded-xl font-sans font-medium"
+                  >
+                    <MdAutoAwesome className="w-4 h-4" />
+                    Confirm and Generate
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Submit / Loading */}
+            {!showConfirm && (
+              <Button
+                onClick={handleValidate}
+                disabled={loading}
+                className="w-full gap-2 rounded-xl font-sans font-medium h-12 text-base"
+              >
+                {loading ? (
+                  <>
+                    <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" />
+                    Creating your marketing materials...
+                  </>
+                ) : (
+                  <>
+                    <MdAutoAwesome className="w-5 h-5" />
+                    Generate Content
+                  </>
+                )}
+              </Button>
+            )}
+
+            {loading && (
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20">
+                <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin text-primary" />
+                <div>
+                  <p className="text-sm font-medium font-sans text-foreground">Generating your marketing materials...</p>
+                  <p className="text-xs text-muted-foreground font-sans mt-1">This may take up to a minute. Your campaign is already saved as a draft.</p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
