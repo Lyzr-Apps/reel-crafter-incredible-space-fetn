@@ -288,7 +288,19 @@ function BrandSettings() {
 
 export default function Page() {
   const [screen, setScreen] = useState<Screen>('dashboard')
-  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [campaigns, setCampaigns] = useState<Campaign[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (Array.isArray(parsed)) return parsed
+      }
+    } catch {
+      // ignore parse errors
+    }
+    return []
+  })
   const [activeCampaignId, setActiveCampaignId] = useState<string | null>(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [sampleMode, setSampleMode] = useState(true)
@@ -297,20 +309,7 @@ export default function Page() {
   const [activeAgentId, setActiveAgentId] = useState<string | null>(null)
   const [error, setError] = useState('')
 
-  // Load campaigns from localStorage on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        if (Array.isArray(parsed)) setCampaigns(parsed)
-      }
-    } catch {
-      // ignore parse errors
-    }
-  }, [])
-
-  // Save campaigns to localStorage
+  // Save campaigns to localStorage whenever they change
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(campaigns))
